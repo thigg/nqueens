@@ -16,30 +16,23 @@ def nqueens(n: int) -> int:
     """
     if not isinstance(n, int) or n < 1:
         raise ValueError("nqueens can only be solved for positive, non-zero integers.")
-    return nqueensaccu(n, [])
+    return nqueensaccu(n, [], [], [])
 
 
-def avcols(n: int, placed: List[int]) -> List[int]:
-    """
-    Computes the possible cols for the next row.
-    :param placed: the positions of the placed queens, beginning at row 0.
-    :param n: the n in the n-queens
-    :return: the number of possible queen placements with the given initial placement.
-    """
-    return filter(lambda i: not(i in placed or  # straight
-                            i in [p + (len(placed)-idx) for idx,p in enumerate(placed)] or  # diagonal
-                            i in [p - (len(placed)-idx) for idx,p in enumerate(placed)]),  # diagonal
-                  range(n))
-
-
-def nqueensaccu(n: int, placed: List[int]) -> int:
+def nqueensaccu(n: int, placed: List[int], left: List[int], right: List[int]) -> int:
     """
     The recursive function to solve the nqueens problem.
     :param placed: the positions of the placed queens, beginning at row 0.
     :param n: the n in the n-queens
+    :param left: diagonally blocking to the left in the last row
+    :param right: diagonally blocking to the right in the last row
     :return: the number of possible queen placements with the given initial placement.
     """
     # Found a compintation. Juhay!
     if len(placed) == n:
         return 1
-    return sum(nqueensaccu(n,placed+[av]) for av in avcols(n,placed))
+    left = list(map(lambda i: i - 1, left))
+    right = list(map(lambda i: i + 1, right))
+    return sum(nqueensaccu(n, placed + [av], left + [av], right + [av]) for av in
+               filter(lambda i: i not in placed and i not in left and i not in right,  # diagonal
+                      range(n)))
