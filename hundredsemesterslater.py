@@ -22,6 +22,14 @@ def nqueens(n: int) -> int:
 def nqueensaccu(n: int, placed: List[int], left: List[int], right: List[int]) -> int:
     """
     The recursive function to solve the nqueens problem.
+
+    Concept:
+    Find all possible fields where a queen can be placed, place one on each separatley and call recursivley.
+    Queens block straight and diagonally.
+    For straight, we have to consider only one direction, because we iterate over the other.
+    Diagonally is handeled by the two lists left and right, which have a marker for each diagonal line in the last row,
+    which is moved into the correct direction then to figure out which field is blocked.
+
     :param placed: the positions of the placed queens, beginning at row 0.
     :param n: the n in the n-queens
     :param left: diagonally blocking to the left in the last row
