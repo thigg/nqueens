@@ -1,7 +1,9 @@
-from typing import List
+from typing import List, Tuple, Set
+
+from helpers import rotate, mirror
 
 
-def nqueens(n: int) -> int:
+def nqueens(n: int) -> Tuple[int, int]:
     """
     Computes the solution for the n-queens problem:
     Place n queens on a nxn grid without any two queens threatening each other. Standard chess rules apply.
@@ -16,10 +18,10 @@ def nqueens(n: int) -> int:
     """
     if not isinstance(n, int) or n < 1:
         raise ValueError("nqueens can only be solved for positive, non-zero integers.")
-    return nqueensaccu(n, [], [], [])
+    return nqueensaccu(n, [], [], [], set())
 
 
-def nqueensaccu(n: int, placed: List[int], left: List[int], right: List[int]) -> int:
+def nqueensaccu(n: int, placed: List[int], left: List[int], right: List[int], alreadyseen: Set) -> Tuple[int, int]:
     """
     The recursive function to solve the nqueens problem.
 
@@ -34,13 +36,58 @@ def nqueensaccu(n: int, placed: List[int], left: List[int], right: List[int]) ->
     :param n: the n in the n-queens
     :param left: diagonally blocking to the left in the last row
     :param right: diagonally blocking to the right in the last row
-    :return: the number of possible queen placements with the given initial placement.
+    :param alreadyseen: a mutable set which stores all solutions we saw already
+    :return: a tuple with the number of all and all unique solutions
     """
-    # Found a compintation. Juhay!
+
+    def updateSet(placed: Tuple[int,...]) -> bool:
+        """
+        Updates the alreadyseen set with the given combination
+        simple approach now, keeping space for other datastructures
+        :param placed: the list of queen positions
+        :return if the combination is already known
+        """
+        if placed in alreadyseen:
+            return False
+        alreadyseen.add(placed)
+        return True
+
+    # Found a combintation. Juhay!
     if len(placed) == n:
-        return 1
+        # We can ignore all mutations if one of them is already known.
+        if tuple(placed) not in alreadyseen:
+            mutations = getMutations(n, tuple(placed))
+            for a in mutations:
+                updateSet(a)
+            # return the number of combinations and a new uniqe combination if it is one.
+            # A combination is unique, when there is no mutation of this combination already found.
+            return (len(mutations), 1)
+        return (0, 0)
+
+    # move diagonal blocklists. Maybe we should use a binary shift operation here...
     left = list(map(lambda i: i - 1, left))
     right = list(map(lambda i: i + 1, right))
-    return sum(nqueensaccu(n, placed + [av], left + [av], right + [av]) for av in
-               filter(lambda i: i not in placed and i not in left and i not in right,  # diagonal
-                      range(n)))
+
+    # fields which are not already threatened by an other queen.
+    unblocked = filter(lambda i: i not in placed and i not in left and i not in right,  # diagonal
+                       range(n))
+    results = [nqueensaccu(n, placed + [av], left + [av], right + [av], alreadyseen) for av in unblocked]
+    results.append((0, 0))
+    return tuple(sum(x) for x in zip(*results)) # sum the returned tuples element-wise
+
+
+def getMutations(n: int, placed: Tuple[int, ...]) -> List[Tuple[int, ...]]:
+    """
+    Simple approach to identify all mutations of a combination
+    :return: all mutations of the current placement by rotation and mirroring.
+    """
+    ret: Set[Tuple[int,...]] = set()  # make sure we take every element only once.
+    ret.add(placed)
+    ret.add(mirror(n, placed))
+    # rotate 3 times and mirror always
+    last = placed
+    for i in range(3):
+        last = rotate(n, last)
+        ret.add(last)
+        ret.add(mirror(n, last))
+    return list(ret)
