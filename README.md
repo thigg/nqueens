@@ -12,4 +12,5 @@ With a backpack full of algorithms, lets see what can be thrown on the nqueens p
 
  - Implemented a naive version of nqueens, passes the tests, works! (4ba81997afd4bacdc5f5e82cd600eb2952b6b4b8)
  - Implemented a more sophisticated approach to checing if a field is blocked. Twice as fast! Yay! (dc97dbfed628cd26d53433210890905d80c88e35)
- - Lets make it a bit harder and also count the unique solutions. A solution is only counted when no rotated or mirrored version of that solution is already found:
+ - Lets make it a bit harder and also count the unique solutions. A solution is only counted when no rotated or mirrored version of that solution is already found.
+   - naive approach implemented.

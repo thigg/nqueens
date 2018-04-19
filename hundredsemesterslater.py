@@ -40,7 +40,7 @@ def nqueensaccu(n: int, placed: List[int], left: List[int], right: List[int], al
     :return: a tuple with the number of all and all unique solutions
     """
 
-    def updateSet(placed: Tuple[int,...]) -> bool:
+    def updateSet(placed: Tuple[int, ...]) -> bool:
         """
         Updates the alreadyseen set with the given combination
         simple approach now, keeping space for other datastructures
@@ -69,11 +69,11 @@ def nqueensaccu(n: int, placed: List[int], left: List[int], right: List[int], al
     right = list(map(lambda i: i + 1, right))
 
     # fields which are not already threatened by an other queen.
-    unblocked = filter(lambda i: i not in placed and i not in left and i not in right,  # diagonal
+    unblocked = filter(lambda i: i not in placed and i not in left and i not in right,
                        range(n))
     results = [nqueensaccu(n, placed + [av], left + [av], right + [av], alreadyseen) for av in unblocked]
     results.append((0, 0))
-    return tuple(sum(x) for x in zip(*results)) # sum the returned tuples element-wise
+    return tuple(sum(x) for x in zip(*results))  # sum the returned tuples element-wise
 
 
 def getMutations(n: int, placed: Tuple[int, ...]) -> List[Tuple[int, ...]]:
@@ -81,7 +81,7 @@ def getMutations(n: int, placed: Tuple[int, ...]) -> List[Tuple[int, ...]]:
     Simple approach to identify all mutations of a combination
     :return: all mutations of the current placement by rotation and mirroring.
     """
-    ret: Set[Tuple[int,...]] = set()  # make sure we take every element only once.
+    ret: Set[Tuple[int, ...]] = set()  # make sure we take every element only once.
     ret.add(placed)
     ret.add(mirror(n, placed))
     # rotate 3 times and mirror always

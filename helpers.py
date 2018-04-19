@@ -9,6 +9,7 @@ def rotate(n, pos: Tuple[int, ...]) -> Tuple[int, ...]:
     :param pos: the combination to rotate
     :return: the rotated combination
     """
+    # I should really import numpy and don't do this by hand...
     ret = list(pos[:])
     c = (n - 1) / 2  # center of the board
     r = -math.pi / 2  # 90 deg
